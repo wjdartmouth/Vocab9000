@@ -45,7 +45,7 @@ enum SeedService {
         for entry in catalog.entries.prefix(50) {
             let card = FlashCard(
                 front: entry.word,
-                back: entry.fallbackBack,
+                back: entry.primaryBack,
                 pos: entry.pos,
                 catalogKey: entry.id
             )
@@ -87,7 +87,8 @@ enum SeedService {
                 StudyItem(
                     id: entry.id,
                     front: entry.word,
-                    back: entry.fallbackBack,
+                    back: entry.primaryBack,
+                    ja: entry.ja,
                     pos: entry.pos,
                     catalogKey: entry.id,
                     isLearned: progress[entry.id] ?? false,
@@ -100,6 +101,7 @@ enum SeedService {
                 id: card.id.uuidString,
                 front: card.front,
                 back: card.back,
+                ja: nil,
                 pos: card.pos,
                 catalogKey: card.catalogKey,
                 isLearned: card.isLearned,
@@ -134,10 +136,10 @@ struct StudyItem: Identifiable {
     let id: String
     let front: String
     let back: String
+    let ja: String?
     let pos: String?
     let catalogKey: String?
     var isLearned: Bool
     /// Present when backed by a real FlashCard row
     var flashCard: FlashCard?
-
 }

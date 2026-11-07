@@ -41,11 +41,26 @@ struct StudySessionView: View {
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(AppTheme.brand)
                         }
-                        Text(showBack ? displayBack(for: card) : card.front)
-                            .font(.system(size: 34, weight: .bold, design: .rounded))
-                            .multilineTextAlignment(.center)
-                            .minimumScaleFactor(0.4)
-                            .padding(.horizontal, 8)
+                        if showBack {
+                            Text(japaneseBack(for: card))
+                                .font(.system(size: 30, weight: .bold, design: .rounded))
+                                .multilineTextAlignment(.center)
+                                .minimumScaleFactor(0.4)
+                                .padding(.horizontal, 8)
+                            if let en = englishExtra(for: card) {
+                                Text(en)
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 12)
+                            }
+                        } else {
+                            Text(card.front)
+                                .font(.system(size: 34, weight: .bold, design: .rounded))
+                                .multilineTextAlignment(.center)
+                                .minimumScaleFactor(0.4)
+                                .padding(.horizontal, 8)
+                        }
                     }
                     .padding(28)
                     .rotation3DEffect(
@@ -120,10 +135,19 @@ struct StudySessionView: View {
         liveBack = ""
     }
 
-    private func displayBack(for card: StudyItem) -> String {
-        if !liveBack.isEmpty { return liveBack }
+    private func japaneseBack(for card: StudyItem) -> String {
+        if let ja = card.ja, !ja.isEmpty { return ja }
         if let fc = card.flashCard, !fc.back.isEmpty { return fc.back }
         return card.back
+    }
+
+    /// Optional English gloss from Free Dictionary API (not Longman Dictionary).
+    private func englishExtra(for card: StudyItem) -> String? {
+        let text = liveBack.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return nil }
+        // Avoid duplicating Japanese if somehow cached same
+        if text == japaneseBack(for: card) { return nil }
+        return text
     }
 
     private func flip() {
@@ -182,9 +206,6 @@ struct StudySessionView: View {
         let result = await DefinitionService.shared.definition(for: card.front, context: context)
         if !result.text.isEmpty {
             liveBack = result.text
-            if let fc = card.flashCard, fc.back.contains("Longman Communication") {
-                fc.back = result.text
-            }
         }
     }
 
