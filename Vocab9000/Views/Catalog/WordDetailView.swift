@@ -66,14 +66,35 @@ struct WordDetailView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("定義")
+                    Text("日本語訳")
+                        .font(.headline)
+                    if let ja = entry.ja, !ja.isEmpty {
+                        Text(ja)
+                            .font(.title3.weight(.semibold))
+                        Text("出典: EJDict-hand（CC0）")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    } else {
+                        Text("辞書に一致する訳がありません")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(AppTheme.cardFill)
+                )
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("英語の定義")
                         .font(.headline)
                     if loading {
                         ProgressView()
                     } else if definitionText.isEmpty {
-                        Text(entry.fallbackBack)
+                        Text("オフラインまたは未取得です。学習時に Free Dictionary API から取得・キャッシュされます。")
                             .foregroundStyle(.secondary)
-                        Text("※ Free Dictionary API から取得できなかったため、POS 表示にフォールバックしています。Longman Dictionary の定義ではありません。")
+                        Text("※ Longman Dictionary の定義ではありません。")
                             .font(.caption2)
                             .foregroundStyle(.tertiary)
                     } else {
@@ -145,7 +166,7 @@ struct WordDetailView: View {
     }
 
     private func add(to deck: Deck) {
-        let back = definitionText.isEmpty ? entry.fallbackBack : definitionText
+        let back = entry.primaryBack
         let card = FlashCard(
             front: entry.word,
             back: back,

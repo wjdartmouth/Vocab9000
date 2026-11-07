@@ -120,9 +120,10 @@ struct CatalogView: View {
                 Text(entry.word)
                     .font(.headline)
                     .foregroundStyle(.primary)
-                Text(entry.displayPOS)
+                Text(entry.ja ?? entry.displayPOS)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .lineLimit(1)
             }
             Spacer()
             if learnedKeys.contains(entry.id) {

@@ -14,12 +14,13 @@
 | 内容 | 出典 |
 |------|------|
 | 単語リスト（約 9000 語・lemma / sense / POS） | [MuhammadYaseenKhan/Longman-Communication](https://github.com/MuhammadYaseenKhan/Longman-Communication)（オープンな単語リスト） |
-| カード裏面の英語定義 | [Free Dictionary API](https://dictionaryapi.dev/)（取得後 SwiftData にキャッシュ。オフライン再表示可） |
+| カード裏面の**日本語訳** | [EJDict-hand](https://github.com/kujirahand/EJDict)（**CC0**・約 98% マッチ） |
+| 補足の英語定義 | [Free Dictionary API](https://dictionaryapi.dev/)（取得後 SwiftData にキャッシュ） |
 
 **Pearson / Longman Dictionary の定義文は一切収録・スクレイピングしていません。**  
-API 未取得時は「品詞 · Longman Communication 9000」のフォールバック表示になります。
+学習カードは日本語訳を優先表示し、英語定義は API 取得後に小さく併記します。未マッチ語は品詞フォールバックです。
 
-バンドル JSON: `Vocab9000/Resources/longman9000.json`（TSV から生成、重複は word+sense+pos 単位で除去）
+バンドル JSON: `Vocab9000/Resources/longman9000.json`（`word` / `pos` / `sense?` / `ja?`）
 
 ## Xcode で開く方法
 
@@ -48,7 +49,7 @@ open Vocab9000.xcodeproj
 
 - **カタログ**: A–Z / 品詞フィルタ / 検索、単語詳細、TTS、覚えたマーク、マイデッキへ追加
 - **デッキ**: 組み込み仮想デッキ（All / A–C … V–Z）＋マイデッキ CRUD、カード追加・編集・削除
-- **学習**: 3D めくり、スワイプ（右=覚えた / 左=まだ）、TTS、ハプティクス、進捗の永続化
+- **学習**: 3D めくり（裏面=日本語訳優先）、スワイプ、TTS、ハプティクス、英語定義の任意表示
 - **オフライン**: 語彙カタログはバンドル、学習進捗・定義キャッシュは SwiftData
 - **初回起動**: 組み込みデッキ＋「はじめての50語」サンプルをシード
 
