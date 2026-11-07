@@ -14,7 +14,7 @@
 | 内容 | 出典 |
 |------|------|
 | 単語リスト（約 9000 語・lemma / sense / POS） | [MuhammadYaseenKhan/Longman-Communication](https://github.com/MuhammadYaseenKhan/Longman-Communication)（オープンな単語リスト） |
-| カード裏面の**日本語訳** | [EJDict-hand](https://github.com/kujirahand/EJDict)（**CC0**・約 98% マッチ） |
+| カード裏面の**日本語訳** | [EJDict-hand](https://github.com/kujirahand/EJDict)（**CC0**・大半）＋未マッチ分は編集部による学習者向け短訳 |
 | 補足の英語定義 | [Free Dictionary API](https://dictionaryapi.dev/)（取得後 SwiftData にキャッシュ） |
 
 **Pearson / Longman Dictionary の定義文は一切収録・スクレイピングしていません。**  
