@@ -21,6 +21,7 @@ struct RootTabView: View {
         .task {
             catalog.loadIfNeeded()
             SeedService.seedIfNeeded(context: context, catalog: catalog)
+            SeedService.migrateSRSIfNeeded(context: context)
         }
     }
 }
