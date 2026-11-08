@@ -51,6 +51,7 @@ open Vocab9000.xcodeproj
 - **デッキ**: 組み込み仮想デッキ（All / A–C … V–Z）＋マイデッキ CRUD、カード追加・編集・削除
 - **学習 / SRS**: SM-2 間隔反復（もう一度 / 難しい / 普通 / 簡単）。期限切れ優先キュー、セッション上限、SwiftData 永続化
 - **統計**: 覚えた語数・今日の期限・連続学習日数・最終学習、文字別チャート（Swift Charts）、デッキ別進捗
+- **ウィジェット / 通知**: ホーム画面ウィジェット（期限・連続日数）、毎日の学習リマインダー（設定で時刻変更）、`vocab9000://study` ディープリンク
 - **オフライン**: 語彙カタログはバンドル、学習進捗・定義キャッシュは SwiftData
 - **初回起動**: 組み込みデッキ＋「はじめての50語」サンプルをシード
 
@@ -68,6 +69,16 @@ Vocab9000/
     ├── Views/
     └── Resources/longman9000.json
 ```
+
+
+## ウィジェット・通知の有効化（Xcode）
+
+1. `xcodegen generate` 後、**Signing & Capabilities** で App / Widget 両方に **App Groups** を追加し、`group.com.jianwang.Vocab9000` にチェック。
+2. メインアプリに **Push Notifications** は不要（ローカル通知のみ）。初回は設定タブで通知を許可。
+3. 実機またはシミュレータで Run 後、ホーム画面を長押し → **ウィジェットを追加** → Vocab9000。
+4. ウィジェットをタップすると `vocab9000://study` で学習タブが開きます（URL Types は Info のカスタム URL Scheme `vocab9000` を Xcode で追加してください）。
+
+手動で URL Scheme を足す場合: Target Vocab9000 → Info → URL Types → Identifier `vocab9000`, Scheme `vocab9000`。
 
 ## 注意
 
