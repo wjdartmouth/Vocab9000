@@ -21,7 +21,6 @@ struct DueStreakProvider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<DueStreakEntry>) -> Void) {
         let snap = WidgetSnapshotStore.load()
         let entry = DueStreakEntry(date: Date(), snapshot: snap)
-        // Refresh periodically; app also calls reloadAllTimelines after study.
         let next = Calendar.current.date(byAdding: .minute, value: 30, to: Date()) ?? Date().addingTimeInterval(1800)
         completion(Timeline(entries: [entry], policy: .after(next)))
     }
@@ -35,8 +34,8 @@ struct DueStreakWidget: Widget {
             DueStreakWidgetView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("Vocab9000 学習")
-        .description("今日の復習枚数と連続学習日数を表示します。")
+        .configurationDisplayName(String(localized: "widget.display_name"))
+        .description(String(localized: "widget.description"))
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
@@ -58,14 +57,20 @@ struct DueStreakWidgetView: View {
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
                     Text("\(entry.snapshot.dueToday)")
                         .font(.system(size: 34, weight: .bold, design: .rounded))
-                    Text("期限")
+                    Text(String(localized: "widget.due_label"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
 
                 HStack(spacing: 12) {
-                    Label("\(entry.snapshot.streakDays) 日連続", systemImage: "flame.fill")
-                    Label("\(entry.snapshot.learnedCount) 語", systemImage: "checkmark.circle")
+                    Label(
+                        String(format: String(localized: "widget.streak"), entry.snapshot.streakDays),
+                        systemImage: "flame.fill"
+                    )
+                    Label(
+                        String(format: String(localized: "widget.learned"), entry.snapshot.learnedCount),
+                        systemImage: "checkmark.circle"
+                    )
                 }
                 .font(.caption2)
                 .foregroundStyle(.secondary)
@@ -73,6 +78,13 @@ struct DueStreakWidgetView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             .padding(4)
         }
-        .accessibilityLabel(entry.snapshot.accessibilitySummary)
+        .accessibilityLabel(
+            String(
+                format: String(localized: "widget.a11y"),
+                entry.snapshot.dueToday,
+                entry.snapshot.streakDays,
+                entry.snapshot.learnedCount
+            )
+        )
     }
 }

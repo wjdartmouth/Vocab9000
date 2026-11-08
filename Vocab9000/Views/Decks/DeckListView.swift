@@ -60,7 +60,7 @@ struct DeckListView: View {
                 .padding()
             }
             .background(AppTheme.pageBg)
-            .navigationTitle("デッキ")
+            .navigationTitle(L10n.t("decks.title"))
             .toolbar {
                 Button { showNew = true } label: {
                     Image(systemName: "plus.circle.fill")

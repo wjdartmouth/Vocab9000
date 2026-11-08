@@ -47,7 +47,7 @@ enum SeedService {
         for entry in catalog.entries.prefix(50) {
             let card = FlashCard(
                 front: entry.word,
-                back: entry.primaryBack,
+                back: entry.primaryBack(locale: .current),
                 pos: entry.pos,
                 catalogKey: entry.id
             )
@@ -198,7 +198,7 @@ enum SeedService {
                 return StudyItem(
                     id: entry.id,
                     front: entry.word,
-                    back: entry.primaryBack,
+                    back: entry.primaryBack(locale: .current),
                     ja: entry.ja,
                     pos: entry.pos,
                     catalogKey: entry.id,

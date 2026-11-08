@@ -58,6 +58,7 @@ targets:
       - path: Shared
     resources:
       - path: Vocab9000Widget/PrivacyInfo.xcprivacy
+      - path: Vocab9000Widget/Localizable.xcstrings
     entitlements:
       path: Vocab9000Widget/Vocab9000Widget.entitlements
     settings:
