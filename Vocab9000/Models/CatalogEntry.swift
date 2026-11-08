@@ -6,8 +6,12 @@ struct CatalogEntry: Codable, Identifiable, Hashable {
     let word: String
     let pos: String?
     let sense: String?
-    /// Japanese gloss from EJDict-hand (CC0); optional for unmatched lemmas
+    /// Japanese gloss (EJDict-hand CC0 + editor)
     let ja: String?
+    /// Simplified Chinese (from CC-CEDICT reverse match / editor)
+    let zhHans: String?
+    /// Traditional Chinese (from CC-CEDICT reverse match / editor)
+    let zhHant: String?
 
     var displayPOS: String {
         guard let pos, !pos.isEmpty else { return "—" }
@@ -19,11 +23,23 @@ struct CatalogEntry: Codable, Identifiable, Hashable {
         return first.first?.isLetter == true ? first : "#"
     }
 
-    /// Prefer Japanese gloss on card backs; fall back to POS label.
-    var primaryBack: String {
+    /// Locale-aware card back: zh-* prefer Chinese, else Japanese, else POS fallback.
+    func primaryBack(locale: Locale = .current) -> String {
+        let id = locale.identifier.lowercased()
+        let langs = locale.language.languageCode?.identifier.lowercased() ?? ""
+        if id.contains("hant") || id.contains("tw") || id.contains("hk") || id.contains("mo") {
+            if let zhHant, !zhHant.isEmpty { return zhHant }
+            if let zhHans, !zhHans.isEmpty { return zhHans }
+        }
+        if langs == "zh" || id.hasPrefix("zh") {
+            if let zhHans, !zhHans.isEmpty { return zhHans }
+            if let zhHant, !zhHant.isEmpty { return zhHant }
+        }
         if let ja, !ja.isEmpty { return ja }
         return fallbackBack
     }
+
+    var primaryBack: String { primaryBack(locale: .current) }
 
     var fallbackBack: String {
         var parts: [String] = []
