@@ -17,7 +17,7 @@ struct StatsView: View {
 
     private static let dateFormatter: DateFormatter = {
         let f = DateFormatter()
-        f.locale = Locale(identifier: "ja_JP")
+        f.locale = .autoupdatingCurrent
         f.dateStyle = .medium
         f.timeStyle = .short
         return f
@@ -52,21 +52,21 @@ struct StatsView: View {
             metricTile(
                 title: L10n.t("stats.due_today"),
                 value: "\(stats.dueToday)",
-                subtitle: "復習待ち",
+                subtitle: L10n.t("stats.due_waiting"),
                 icon: "clock.badge.exclamationmark",
                 color: AppTheme.again
             )
             metricTile(
                 title: L10n.t("stats.reviewed_today"),
                 value: "\(stats.reviewedToday)",
-                subtitle: "回・枚",
+                subtitle: L10n.t("stats.reviews_unit"),
                 icon: "flame.fill",
                 color: .orange
             )
             metricTile(
                 title: L10n.t("stats.in_progress"),
                 value: "\(stats.inProgress)",
-                subtitle: "未定着",
+                subtitle: L10n.t("stats.not_settled"),
                 icon: "arrow.triangle.2.circlepath",
                 color: AppTheme.brand
             )
@@ -146,8 +146,8 @@ struct StatsView: View {
                 .font(.headline)
             Chart(stats.byLetter) { item in
                 BarMark(
-                    x: .value("文字", item.letter),
-                    y: .value("習得率", item.ratio * 100)
+                    x: .value(L10n.t("stats.chart_letter"), item.letter),
+                    y: .value(L10n.t("stats.chart_mastery"), item.ratio * 100)
                 )
                 .foregroundStyle(AppTheme.brand.gradient)
             }
