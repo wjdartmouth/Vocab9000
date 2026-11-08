@@ -8,18 +8,19 @@ https://github.com/MuhammadYaseenKhan/Longman-Communication
 This is an open word *list*, not the Longman Dictionary text.
 
 ## Japanese glosses
-Most bundled `ja` fields are short glosses matched from **EJDict-hand** (CC0 1.0 Universal / Public Domain):
+Most `ja` fields from **EJDict-hand** (CC0 1.0):
 
-- https://github.com/kujirahand/EJDict
-- License: [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
+https://github.com/kujirahand/EJDict
 
-Matching is automated (lemma / light morphology / POS sense hints).
+Remainder: short editor-supplied learner glosses.
 
-**Editor-supplied glosses:** A small remainder of Longman lemmas with no EJDict hit (modern tech terms, -ly adverbs, British spellings, abbreviations, etc.) have short learner-oriented Japanese glosses written for this project. They are not copied from Longman Dictionary or other commercial dictionaries.
+## Chinese glosses (zhHans / zhHant)
+Most Chinese glosses are reverse-matched from **CC-CEDICT** (CC BY-SA 4.0):
+
+https://www.mdbg.net/chinese/dictionary?page=cc-cedict  
+https://creativecommons.org/licenses/by-sa/4.0/
+
+Matching maps English sense glosses back to Chinese headwords; some high-frequency entries use short editor glosses. This derived gloss table should be treated under CC BY-SA 4.0 attribution/share-alike for the CEDICT-derived portion.
 
 ## English definitions
-Fetched at runtime from Free Dictionary API:
-
-https://dictionaryapi.dev/
-
-Cached locally in SwiftData after first successful fetch. Not Longman Dictionary content.
+Free Dictionary API: https://dictionaryapi.dev/ (runtime fetch + on-device cache). Not Longman Dictionary content.
