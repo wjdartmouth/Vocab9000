@@ -128,15 +128,14 @@ enum SRSService {
     }
 
     static func formatIntervalHint(days: Double, grade: SRSGrade) -> String {
-        if grade == .again { return "<10分" }
-        // Preview approximate next interval without mutating — lightweight
+        if grade == .again { return L10n.t("srs.hint_lt10m") }
         if days <= 0 {
             switch grade {
-            case .hard, .good: return "1日"
-            case .easy: return "4日"
-            case .again: return "<10分"
+            case .hard, .good: return L10n.t("srs.hint_1d")
+            case .easy: return L10n.t("srs.hint_4d")
+            case .again: return L10n.t("srs.hint_lt10m")
             }
         }
-        return "\(max(1, Int(days.rounded())))日"
+        return L10n.format("srs.hint_nd", max(1, Int(days.rounded())))
     }
 }

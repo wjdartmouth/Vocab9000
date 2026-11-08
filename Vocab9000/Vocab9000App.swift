@@ -1,8 +1,13 @@
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 @main
 struct Vocab9000App: App {
+    init() {
+        UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
+    }
+
     var body: some Scene {
         WindowGroup {
             RootTabView()
@@ -22,10 +27,14 @@ struct Vocab9000App: App {
 enum DeepLinkRouter {
     static let studyTabNotification = Notification.Name("vocab9000.openStudyTab")
 
+    static func openStudy() {
+        NotificationCenter.default.post(name: studyTabNotification, object: nil)
+    }
+
     static func handle(_ url: URL) {
         guard url.scheme == "vocab9000" else { return }
-        if url.host == "study" || url.path == "/study" {
-            NotificationCenter.default.post(name: studyTabNotification, object: nil)
+        if url.host == "study" || url.path == "/study" || url.path.hasSuffix("study") {
+            openStudy()
         }
     }
 }

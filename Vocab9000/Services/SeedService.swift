@@ -42,7 +42,7 @@ enum SeedService {
             context.insert(deck)
         }
 
-        let starter = Deck(title: "はじめての50語", languageCode: "en", isBuiltIn: false)
+        let starter = Deck(title: "__seed.starter50__", languageCode: "en", isBuiltIn: false)
         context.insert(starter)
         for entry in catalog.entries.prefix(50) {
             let card = FlashCard(
@@ -118,17 +118,46 @@ enum SeedService {
         return (learned, total)
     }
 
+    /// Fast due count — avoids materializing full StudyItem arrays for huge built-in decks.
     @MainActor
     static func dueCount(for deck: Deck, catalog: CatalogStore, context: ModelContext) -> Int {
-        studyQueue(for: deck, catalog: catalog, context: context, capped: false)
-            .filter(\.isDue)
-            .count
+        let now = Date()
+        if deck.isBuiltIn, deck.letterRange != nil {
+            let entries = catalogEntries(for: deck, catalog: catalog)
+            let progress = fetchProgressRecords(context: context)
+            return entries.reduce(0) { acc, entry in
+                guard let row = progress[entry.id] else { return acc }
+                let isNew = row.lastReviewed == nil && row.repetitions == 0 && row.intervalDays == 0
+                if isNew { return acc }
+                if let next = row.nextReviewDate {
+                    return acc + (next <= now ? 1 : 0)
+                }
+                return acc + ((row.repetitions > 0 || row.isLearned) ? 1 : 0)
+            }
+        }
+        return deck.cards.reduce(0) { acc, card in
+            let isNew = card.isNew
+            if isNew { return acc }
+            if let next = card.nextReviewDate {
+                return acc + (next <= now ? 1 : 0)
+            }
+            return acc + ((card.repetitions > 0 || card.isLearned) ? 1 : 0)
+        }
     }
 
     @MainActor
     static func nextDueDate(for deck: Deck, catalog: CatalogStore, context: ModelContext) -> Date? {
-        let items = studyItems(for: deck, catalog: catalog, context: context)
-        return items.compactMap(\.nextReviewDate).filter { $0 > Date() }.min()
+        let now = Date()
+        if deck.isBuiltIn, deck.letterRange != nil {
+            let progress = fetchProgressRecords(context: context)
+            let keys = Set(catalogEntries(for: deck, catalog: catalog).map(\.id))
+            return progress.values
+                .filter { keys.contains($0.catalogKey) }
+                .compactMap(\.nextReviewDate)
+                .filter { $0 > now }
+                .min()
+        }
+        return deck.cards.compactMap(\.nextReviewDate).filter { $0 > now }.min()
     }
 
     /// Due cards first, then new; optionally cap for a session.
