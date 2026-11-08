@@ -23,11 +23,11 @@ struct DeckListView: View {
                     summaryHeader
 
                     if !mine.isEmpty {
-                        sectionTitle("マイデッキ")
+                        sectionTitle(L10n.t("decks.mine"))
                         ForEach(mine) { deck in
                             NavigationLink { DeckDetailView(deck: deck) } label: {
                                 DeckRowCard(
-                                    title: deck.title,
+                                    title: AppTheme.localizedDeckTitle(deck.title),
                                     subtitle: AppTheme.languageLabel(deck.languageCode),
                                     progress: deck.progress,
                                     learned: deck.learnedCount,
@@ -38,18 +38,18 @@ struct DeckListView: View {
                             .buttonStyle(.plain)
                             .contextMenu {
                                 NavigationLink { StudySessionView(deck: deck) } label: {
-                                    Label("学習", systemImage: "rectangle.on.rectangle.angled")
+                                    Label(L10n.t("decks.study"), systemImage: "rectangle.on.rectangle.angled")
                                 }
                                 Button(role: .destructive) {
                                     withAnimation { context.delete(deck) }
                                 } label: {
-                                    Label("削除", systemImage: "trash")
+                                    Label(L10n.t("common.delete"), systemImage: "trash")
                                 }
                             }
                         }
                     }
 
-                    sectionTitle("組み込み（Longman 9000）")
+                    sectionTitle(L10n.t("decks.builtin"))
                     ForEach(builtIn) { deck in
                         NavigationLink { BuiltInDeckDetailView(deck: deck) } label: {
                             builtInRow(deck)
@@ -74,11 +74,11 @@ struct DeckListView: View {
 
     private var summaryHeader: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("カタログ進捗")
+            Text(L10n.t("decks.catalog_progress"))
                 .font(.headline)
             ProgressView(value: Double(globalLearned), total: Double(max(catalog.entries.count, 1)))
                 .tint(AppTheme.brand)
-            Text("\(globalLearned) / \(catalog.entries.count) 語")
+            Text(L10n.format("decks.words_count", globalLearned, catalog.entries.count))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -100,8 +100,8 @@ struct DeckListView: View {
         let stats = SeedService.builtInStats(for: deck, catalog: catalog, context: context)
         let progress = stats.total == 0 ? 0.0 : Double(stats.learned) / Double(stats.total)
         return DeckRowCard(
-            title: deck.title,
-            subtitle: "\(stats.total) 語 · 仮想デッキ",
+            title: AppTheme.localizedDeckTitle(deck.title),
+            subtitle: L10n.format("decks.virtual", stats.total),
             progress: progress,
             learned: stats.learned,
             total: stats.total,
@@ -112,20 +112,20 @@ struct DeckListView: View {
     private var newDeckSheet: some View {
         NavigationStack {
             Form {
-                TextField("デッキ名", text: $newTitle)
-                Picker("言語", selection: $newLang) {
+                TextField(L10n.t("decks.name"), text: $newTitle)
+                Picker(L10n.t("decks.language"), selection: $newLang) {
                     ForEach(AppTheme.languages, id: \.code) { item in
                         Text(item.label).tag(item.code)
                     }
                 }
             }
-            .navigationTitle("新規デッキ")
+            .navigationTitle(L10n.t("decks.new"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") { showNew = false }
+                    Button(L10n.t("common.cancel")) { showNew = false }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("作成") {
+                    Button(L10n.t("common.create")) {
                         let title = newTitle.trimmingCharacters(in: .whitespaces)
                         guard !title.isEmpty else { return }
                         withAnimation(.spring()) {

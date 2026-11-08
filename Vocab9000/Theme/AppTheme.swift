@@ -8,17 +8,29 @@ enum AppTheme {
     static let cardFill = Color(.secondarySystemBackground)
     static let pageBg = Color(.systemGroupedBackground)
 
-    static let languages: [(code: String, label: String)] = [
-        ("en", "英語"),
-        ("ja", "日本語"),
-        ("zh-CN", "中国語"),
-        ("ko", "韓国語"),
-        ("fr", "フランス語"),
-        ("es", "スペイン語")
-    ]
+    static var languages: [(code: String, label: String)] {
+        [
+            ("en", L10n.t("lang.en")),
+            ("ja", L10n.t("lang.ja")),
+            ("zh-CN", L10n.t("lang.zh")),
+            ("ko", L10n.t("lang.ko")),
+            ("fr", L10n.t("lang.fr")),
+            ("es", L10n.t("lang.es"))
+        ]
+    }
 
     static func languageLabel(_ code: String) -> String {
         languages.first { $0.code == code }?.label ?? code
+    }
+
+    /// Localize known seed / special deck titles at display time.
+    static func localizedDeckTitle(_ title: String) -> String {
+        switch title {
+        case "__seed.starter50__", "はじめての50語":
+            return L10n.t("seed.starter50")
+        default:
+            return title
+        }
     }
 }
 
@@ -69,7 +81,7 @@ struct DeckRowCard: View {
                 .foregroundStyle(.secondary)
             ProgressView(value: min(max(progress, 0), 1))
                 .tint(AppTheme.brand)
-            Text("\(learned)/\(total) 覚えた")
+            Text(L10n.format("stats.learned_of", learned, total))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

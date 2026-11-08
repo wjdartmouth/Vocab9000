@@ -8,9 +8,9 @@ struct CatalogView: View {
 
     @State private var search = ""
     @State private var selectedLetter: String? = nil
-    @State private var posFilter: String = "すべて"
+    @State private var posFilter: String = "all"
 
-    private let posOptions = ["すべて", "noun", "verb", "adjective", "adverb", "preposition", "pronoun", "conjunction"]
+    private let posOptions = ["all", "noun", "verb", "adjective", "adverb", "preposition", "pronoun", "conjunction"]
 
     private var learnedKeys: Set<String> {
         Set(progress.filter(\.isLearned).map(\.catalogKey))
@@ -25,14 +25,14 @@ struct CatalogView: View {
         } else {
             list = catalog.entries
         }
-        if posFilter != "すべて" {
+        if posFilter != "all" {
             list = list.filter { ($0.pos ?? "").lowercased().contains(posFilter) }
         }
         return list
     }
 
     private var displayList: [CatalogEntry] {
-        let limitAll = search.isEmpty && selectedLetter == nil && posFilter == "すべて"
+        let limitAll = search.isEmpty && selectedLetter == nil && posFilter == "all"
         return limitAll ? Array(filtered.prefix(200)) : filtered
     }
 
@@ -51,8 +51,8 @@ struct CatalogView: View {
                             }
                             .buttonStyle(.plain)
                         }
-                        if search.isEmpty && selectedLetter == nil && posFilter == "すべて" && filtered.count > 200 {
-                            Text("文字・品詞・検索で絞り込むと全 \(catalog.entries.count) 語を表示できます")
+                        if search.isEmpty && selectedLetter == nil && posFilter == "all" && filtered.count > 200 {
+                            Text(L10n.format("catalog.limit_hint", catalog.entries.count))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .padding()
@@ -62,13 +62,13 @@ struct CatalogView: View {
                 }
                 .background(AppTheme.pageBg)
             }
-            .navigationTitle("Longman 9000")
-            .searchable(text: $search, prompt: "単語を検索")
+            .navigationTitle(L10n.t("catalog.title"))
+            .searchable(text: $search, prompt: L10n.t("catalog.search"))
             .overlay {
                 if !catalog.isLoaded {
-                    ProgressView("読み込み中…")
+                    ProgressView(L10n.t("catalog.loading"))
                 } else if displayList.isEmpty {
-                    ContentUnavailableView("見つかりません", systemImage: "magnifyingglass")
+                    ContentUnavailableView(L10n.t("catalog.not_found"), systemImage: "magnifyingglass")
                 }
             }
         }
@@ -77,7 +77,7 @@ struct CatalogView: View {
     private var letterBar: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 6) {
-                chip("すべて", selected: selectedLetter == nil) { selectedLetter = nil }
+                chip(L10n.t("catalog.all"), selected: selectedLetter == nil) { selectedLetter = nil }
                 ForEach(catalog.letters, id: \.self) { letter in
                     chip(letter, selected: selectedLetter == letter) {
                         selectedLetter = letter
@@ -94,7 +94,9 @@ struct CatalogView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 6) {
                 ForEach(posOptions, id: \.self) { option in
-                    chip(option, selected: posFilter == option) { posFilter = option }
+                    chip(option == "all" ? L10n.t("catalog.all") : option, selected: posFilter == option) {
+                        posFilter = option
+                    }
                 }
             }
             .padding(.horizontal)

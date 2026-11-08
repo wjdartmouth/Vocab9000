@@ -11,19 +11,19 @@ struct DeckDetailView: View {
         List {
             Section {
                 HStack {
-                    Text("進捗")
+                    Text(L10n.t("deck.progress"))
                     Spacer()
                     Text("\(deck.learnedCount)/\(deck.cards.count)")
                         .foregroundStyle(.secondary)
                 }
                 ProgressView(value: deck.progress)
                     .tint(AppTheme.brand)
-                NavigationLink("学習を開始") {
+                NavigationLink(L10n.t("deck.start_study")) {
                     StudySessionView(deck: deck)
                 }
             }
 
-            Section("カード") {
+            Section(L10n.t("deck.cards")) {
                 ForEach(deck.cards) { card in
                     Button {
                         editing = card
@@ -49,7 +49,7 @@ struct DeckDetailView: View {
                 }
             }
         }
-        .navigationTitle(deck.title)
+        .navigationTitle(AppTheme.localizedDeckTitle(deck.title))
         .toolbar {
             Button { showNew = true } label: { Image(systemName: "plus") }
         }
@@ -81,21 +81,21 @@ struct BuiltInDeckDetailView: View {
         List {
             Section {
                 HStack {
-                    Text("進捗")
+                    Text(L10n.t("deck.progress"))
                     Spacer()
                     Text("\(learned)/\(entries.count)")
                         .foregroundStyle(.secondary)
                 }
                 ProgressView(value: Double(learned), total: Double(max(entries.count, 1)))
                     .tint(AppTheme.brand)
-                NavigationLink("学習を開始") {
+                NavigationLink(L10n.t("deck.start_study")) {
                     StudySessionView(deck: deck)
                 }
             } footer: {
-                Text("組み込みデッキはカタログから仮想生成されます。1セッション最大50語。進捗は端末に保存されます。")
+                Text(L10n.t("deck.builtin_footer"))
             }
 
-            Section("単語プレビュー（先頭100）") {
+            Section(L10n.t("deck.preview")) {
                 ForEach(entries.prefix(100)) { entry in
                     HStack {
                         Text(entry.word)
@@ -108,6 +108,6 @@ struct BuiltInDeckDetailView: View {
                 }
             }
         }
-        .navigationTitle(deck.title)
+        .navigationTitle(AppTheme.localizedDeckTitle(deck.title))
     }
 }
