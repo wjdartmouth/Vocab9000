@@ -12,10 +12,10 @@ enum SRSGrade: Int, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .again: return "もう一度"
-        case .hard: return "難しい"
-        case .good: return "普通"
-        case .easy: return "簡単"
+        case .again: return L10n.t("srs.again")
+        case .hard: return L10n.t("srs.hard")
+        case .good: return L10n.t("srs.good")
+        case .easy: return L10n.t("srs.easy")
         }
     }
 

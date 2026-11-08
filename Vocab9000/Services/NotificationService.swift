@@ -53,11 +53,11 @@ enum NotificationService {
         guard isEnabled else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "Vocab9000 学習リマインダー"
+        content.title = L10n.t("notif.title")
         if dueToday > 0 {
-            content.body = "今日の復習が \(dueToday) 枚あります。いま学習しますか？"
+            content.body = L10n.format("notif.body_due", dueToday)
         } else {
-            content.body = "今日も少しだけ単語を復習しませんか？"
+            content.body = L10n.t("notif.body_generic")
         }
         content.sound = .default
         content.userInfo = ["deepLink": "vocab9000://study"]

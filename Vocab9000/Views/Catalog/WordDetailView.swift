@@ -19,6 +19,16 @@ struct WordDetailView: View {
 
     private var userDecks: [Deck] { decks.filter { !$0.isBuiltIn } }
 
+    private var preferredGloss: String { entry.primaryBack(locale: .current) }
+
+    private var glossSourceNote: String {
+        let id = Locale.current.identifier.lowercased()
+        if id.hasPrefix("zh") {
+            return "CC-CEDICT (CC BY-SA 4.0) / editor"
+        }
+        return "EJDict-hand (CC0)"
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -44,7 +54,7 @@ struct WordDetailView: View {
                     Button {
                         SpeechService.shared.speak(entry.word, languageCode: "en")
                     } label: {
-                        Label("読み上げ", systemImage: "speaker.wave.2.fill")
+                        Label(L10n.t("study.speak"), systemImage: "speaker.wave.2.fill")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
@@ -58,48 +68,29 @@ struct WordDetailView: View {
                             context: context
                         )
                     } label: {
-                        Label(isLearned ? "未習得に" : "覚えた", systemImage: isLearned ? "arrow.counterclockwise" : "checkmark")
-                            .frame(maxWidth: .infinity)
+                        Label(
+                            isLearned ? L10n.t("srs.again") : L10n.t("stats.learned"),
+                            systemImage: isLearned ? "arrow.counterclockwise" : "checkmark"
+                        )
+                        .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.bordered)
                     .tint(isLearned ? AppTheme.again : AppTheme.learned)
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("日本語訳")
-                        .font(.headline)
-                    if let ja = entry.ja, !ja.isEmpty {
-                        Text(ja)
-                            .font(.title3.weight(.semibold))
-                        Text("出典: EJDict-hand（CC0）")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
-                    } else {
-                        Text("辞書に一致する訳がありません")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(AppTheme.cardFill)
-                )
+                glossCard
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("英語の定義")
+                    Text(L10n.t("catalog.en_def"))
                         .font(.headline)
                     if loading {
                         ProgressView()
                     } else if definitionText.isEmpty {
-                        Text("オフラインまたは未取得です。学習時に Free Dictionary API から取得・キャッシュされます。")
+                        Text("—")
                             .foregroundStyle(.secondary)
-                        Text("※ Longman Dictionary の定義ではありません。")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
                     } else {
                         Text(definitionText)
-                        Text("出典: Free Dictionary API（Longman Dictionary ではありません）")
+                        Text("Free Dictionary API")
                             .font(.caption2)
                             .foregroundStyle(.tertiary)
                     }
@@ -114,7 +105,7 @@ struct WordDetailView: View {
                 Button {
                     showAdd = true
                 } label: {
-                    Label("マイデッキに追加", systemImage: "plus.rectangle.on.folder")
+                    Label(L10n.t("catalog.add_deck"), systemImage: "plus.rectangle.on.folder")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
@@ -132,33 +123,62 @@ struct WordDetailView: View {
                     .padding()
                     .background(.ultraThinMaterial, in: Capsule())
                     .padding(.bottom, 24)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
+    }
+
+    private var glossCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(Locale.current.identifier.lowercased().hasPrefix("zh")
+                 ? L10n.t("catalog.zh_label")
+                 : L10n.t("catalog.ja_label"))
+                .font(.headline)
+            if preferredGloss != entry.fallbackBack {
+                Text(preferredGloss)
+                    .font(.title3.weight(.semibold))
+                Text(glossSourceNote)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            } else {
+                Text("—")
+                    .foregroundStyle(.secondary)
+            }
+            if let ja = entry.ja, !ja.isEmpty, preferredGloss != ja {
+                Text(L10n.t("catalog.ja_label"))
+                    .font(.subheadline.weight(.semibold))
+                    .padding(.top, 4)
+                Text(ja)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(AppTheme.cardFill)
+        )
     }
 
     private var addSheet: some View {
         NavigationStack {
             List {
                 if userDecks.isEmpty {
-                    Text("先に「デッキ」タブでマイデッキを作成してください")
+                    Text("—")
                         .foregroundStyle(.secondary)
                 }
                 ForEach(userDecks) { deck in
                     Button(deck.title) {
                         add(to: deck)
                         showAdd = false
-                        withAnimation { toast = "「\(deck.title)」に追加しました" }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            withAnimation { toast = nil }
-                        }
+                        toast = deck.title
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { toast = nil }
                     }
                 }
             }
-            .navigationTitle("デッキを選択")
+            .navigationTitle(L10n.t("tab.decks"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("閉じる") { showAdd = false }
+                    Button(L10n.t("common.cancel")) { showAdd = false }
                 }
             }
         }
@@ -166,10 +186,9 @@ struct WordDetailView: View {
     }
 
     private func add(to deck: Deck) {
-        let back = entry.primaryBack
         let card = FlashCard(
             front: entry.word,
-            back: back,
+            back: preferredGloss,
             pos: entry.pos,
             catalogKey: entry.id
         )

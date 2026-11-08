@@ -120,7 +120,7 @@ struct CatalogView: View {
                 Text(entry.word)
                     .font(.headline)
                     .foregroundStyle(.primary)
-                Text(entry.ja ?? entry.displayPOS)
+                Text(entry.primaryBack(locale: .current) == entry.fallbackBack ? entry.displayPOS : entry.primaryBack(locale: .current))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
