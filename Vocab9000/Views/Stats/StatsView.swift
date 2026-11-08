@@ -115,7 +115,7 @@ struct StatsView: View {
                     .foregroundStyle(stats.streakDays > 0 ? .orange : .secondary)
             }
             if let last = stats.lastStudied {
-                Text("最終学習: \(last, formatter: Self.dateFormatter)")
+                Text(L10n.format("stats.last", Self.dateFormatter.string(from: last)))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else {
@@ -128,7 +128,7 @@ struct StatsView: View {
                 total: Double(max(stats.catalogTotal, 1))
             )
             .tint(AppTheme.brand)
-            Text(String(format: "カタログ進捗 %.1f%%", stats.catalogTotal == 0 ? 0 : 100 * Double(stats.learnedCount) / Double(stats.catalogTotal)))
+            Text(L10n.format("stats.catalog_progress", stats.catalogTotal == 0 ? 0.0 : 100 * Double(stats.learnedCount) / Double(stats.catalogTotal)))
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
         }
@@ -203,19 +203,19 @@ struct StatsView: View {
                 ForEach(stats.byDeck) { deck in
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
-                            Text(deck.title)
+                            Text(AppTheme.localizedDeckTitle(deck.title))
                                 .font(.subheadline.weight(.semibold))
                                 .lineLimit(1)
                             Spacer()
                             if deck.due > 0 {
-                                Text("期限 \(deck.due)")
+                                Text(L10n.format("stats.due_badge", deck.due))
                                     .font(.caption2.weight(.bold))
                                     .foregroundStyle(AppTheme.again)
                             }
                         }
                         ProgressView(value: deck.ratio)
                             .tint(AppTheme.brand)
-                        Text("\(deck.learned)/\(deck.total) 覚えた")
+                        Text(L10n.format("stats.learned_of", deck.learned, deck.total))
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }

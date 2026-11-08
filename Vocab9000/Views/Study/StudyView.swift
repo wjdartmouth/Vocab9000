@@ -89,12 +89,12 @@ struct StudySessionView: View {
             .padding(.horizontal)
 
             HStack {
-                Label("期限 \(dueAtStart)", systemImage: "clock.badge.exclamationmark")
+                Label(L10n.format("study.due_label", dueAtStart), systemImage: "clock.badge.exclamationmark")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(dueAtStart > 0 ? AppTheme.again : .secondary)
                 Spacer()
                 if let hint = lastIntervalHint {
-                    Text("前回 → \(hint)")
+                    Text(L10n.format("study.prev", hint))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
@@ -106,9 +106,9 @@ struct StudySessionView: View {
     private var sessionSummary: String {
         if items.isEmpty {
             if let next = SeedService.nextDueDate(for: deck, catalog: catalog, context: context) {
-                return "次の復習: \(next, formatter: Self.dueFormatter)"
+                return L10n.format("study.next_due", Self.dueFormatter.string(from: next))
             }
-            return "新しいカードをデッキから追加するか、カタログで学習を開始してください"
+            return L10n.t("study.add_cards_hint")
         }
         return L10n.format("study.reviewed", sessionGraded)
     }
@@ -300,8 +300,8 @@ struct StudySessionView: View {
             grade: grade
         )
         lastIntervalHint = grade == .again
-            ? "<10分"
-            : "\(max(1, Int(preview.intervalDays.rounded())))日"
+            ? L10n.t("srs.hint_lt10m")
+            : L10n.format("srs.hint_nd", max(1, Int(preview.intervalDays.rounded())))
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             SeedService.applyGrade(
@@ -366,12 +366,12 @@ struct ContinueStudyView: View {
                             StudySessionView(deck: target.deck)
                         } label: {
                             DeckRowCard(
-                                title: target.deck.title,
+                                title: displayDeckTitle(target.deck),
                                 subtitle: subtitle(for: target),
                                 progress: target.total == 0 ? 0 : Double(target.learned) / Double(target.total),
                                 learned: target.learned,
                                 total: target.total,
-                                badge: target.due > 0 ? "期限\(target.due)" : (target.deck.isBuiltIn ? "L9000" : "MY")
+                                badge: target.due > 0 ? L10n.format("study.due_badge_short", target.due) : (target.deck.isBuiltIn ? "L9000" : "MY")
                             )
                         }
                         .buttonStyle(.plain)
@@ -404,15 +404,15 @@ struct ContinueStudyView: View {
                 .font(.title2.bold())
                 .foregroundStyle(due > 0 ? AppTheme.again : AppTheme.learned)
             if let next {
-                Text("次の予定: \(next, formatter: Self.dueFormatter)")
+                Text(L10n.format("study.next_scheduled", Self.dueFormatter.string(from: next)))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else if due == 0 {
-                Text("予定された復習はすべて完了です")
+                Text(L10n.t("study.all_caught_up"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            Text("SM-2 間隔反復 · もう一度 / 難しい / 普通 / 簡単")
+            Text(L10n.t("study.srs_blurb"))
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
         }
@@ -454,11 +454,15 @@ struct ContinueStudyView: View {
 
     private func subtitle(for target: StudyTarget) -> String {
         if target.due > 0 {
-            return "復習 \(target.due) 枚 · 新規もセッションに混在可"
+            return L10n.format("study.review_subtitle", target.due)
         }
         if let next = target.nextDue {
-            return "次の復習 \(next, formatter: Self.dueFormatter)"
+            return L10n.format("study.next_review", Self.dueFormatter.string(from: next))
         }
-        return target.deck.isBuiltIn ? "仮想デッキ · 期限なし" : AppTheme.languageLabel(target.deck.languageCode)
+        return target.deck.isBuiltIn ? L10n.t("study.virtual_no_due") : AppTheme.languageLabel(target.deck.languageCode)
+    }
+
+    private func displayDeckTitle(_ deck: Deck) -> String {
+        AppTheme.localizedDeckTitle(deck.title)
     }
 }

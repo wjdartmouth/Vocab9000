@@ -61,7 +61,7 @@ struct SettingsView: View {
                 }
 
                 Section(L10n.t("settings.deeplink")) {
-                    Text("vocab9000://study → 学習タブ")
+                    Text(L10n.t("settings.deeplink_study"))
                         .font(.footnote.monospaced())
                         .foregroundStyle(.secondary)
                 }

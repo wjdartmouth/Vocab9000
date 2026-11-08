@@ -14,19 +14,19 @@ struct CardEditorView: View {
     var body: some View {
         NavigationStack {
             Form {
-                TextField("表（単語）", text: $front)
-                TextField("裏（意味）", text: $back, axis: .vertical)
+                TextField(L10n.t("card.front"), text: $front)
+                TextField(L10n.t("card.back"), text: $back, axis: .vertical)
                     .lineLimit(3...8)
-                TextField("例文（任意）", text: $example, axis: .vertical)
+                TextField(L10n.t("card.example"), text: $example, axis: .vertical)
                     .lineLimit(2...5)
             }
-            .navigationTitle(card == nil ? "カード追加" : "カード編集")
+            .navigationTitle(card == nil ? L10n.t("card.add") : L10n.t("card.edit"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") { dismiss() }
+                    Button(L10n.t("common.cancel")) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") { save() }
+                    Button(L10n.t("common.save")) { save() }
                         .disabled(
                             front.trimmingCharacters(in: .whitespaces).isEmpty
                             || back.trimmingCharacters(in: .whitespaces).isEmpty
