@@ -15,6 +15,9 @@ struct RootTabView: View {
 
             ContinueStudyView()
                 .tabItem { Label("学習", systemImage: "rectangle.on.rectangle.angled") }
+
+            StatsView()
+                .tabItem { Label("統計", systemImage: "chart.bar.fill") }
         }
         .tint(AppTheme.brand)
         .environmentObject(catalog)
