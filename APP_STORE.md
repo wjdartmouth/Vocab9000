@@ -111,3 +111,14 @@ Vocab9000 は学生向け英単語フラッシュカードです。
 - [ ] カテゴリ: 教育 / Education
 
 詳細なストア文言 → [STORE_LISTING_JP.md](./STORE_LISTING_JP.md)
+
+
+## 8. 中文市场（简体 / 繁体）本地化
+
+- 应用内 UI：`Localizable.xcstrings`（`ja` / `en` / `zh-Hans` / `zh-Hant`）
+- 卡片背面：系统语言为 `zh-Hans*` → `zhHans`；`zh-Hant` / 台湾・香港・澳门 → `zhHant`；否则日文 `ja`
+- App Store Connect 本地化：
+  - [ ] 添加 **简体中文** — 文案见 [STORE_LISTING_ZH_HANS.md](./STORE_LISTING_ZH_HANS.md)
+  - [ ] 添加 **繁体中文**（或 繁体中文（台湾）/ 香港）— 见 [STORE_LISTING_ZH_HANT.md](./STORE_LISTING_ZH_HANT.md)
+- 截图：用系统语言切到简体/繁体各拍一套（学习、统计、目录）
+- 隐私标签各国区一致（无追踪）；网络仅为可选 Free Dictionary API

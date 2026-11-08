@@ -51,6 +51,7 @@ open Vocab9000.xcodeproj
 - **デッキ**: 組み込み仮想デッキ（All / A–C … V–Z）＋マイデッキ CRUD、カード追加・編集・削除
 - **学習 / SRS**: SM-2 間隔反復（もう一度 / 難しい / 普通 / 簡単）。期限切れ優先キュー、セッション上限、SwiftData 永続化
 - **統計**: 覚えた語数・今日の期限・連続学習日数・最終学習、文字別チャート（Swift Charts）、デッキ別進捗
+- **多言語 UI**: `ja` / `en` / `zh-Hans` / `zh-Hant`（`Localizable.xcstrings`）。中国語ロケールではカード裏面に中文释义を優先
 - **ウィジェット / 通知**: ホーム画面ウィジェット（期限・連続日数）、毎日の学習リマインダー（設定で時刻変更）、`vocab9000://study` ディープリンク
 - **オフライン**: 語彙カタログはバンドル、学習進捗・定義キャッシュは SwiftData
 - **初回起動**: 組み込みデッキ＋「はじめての50語」サンプルをシード
@@ -91,3 +92,5 @@ Vocab9000/
 
 チェックリストとプライバシーの案内: [APP_STORE.md](./APP_STORE.md)  
 掲載文ドラフト: [STORE_LISTING_JP.md](./STORE_LISTING_JP.md)
+
+中文上架文案: [STORE_LISTING_ZH_HANS.md](./STORE_LISTING_ZH_HANS.md) · [STORE_LISTING_ZH_HANT.md](./STORE_LISTING_ZH_HANT.md)
