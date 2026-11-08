@@ -38,7 +38,7 @@ struct StudySessionView: View {
                         Button {
                             flip()
                         } label: {
-                            Label("めくる", systemImage: "rectangle.on.rectangle.angled")
+                            Label(L10n.t("study.flip"), systemImage: "rectangle.on.rectangle.angled")
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
                         }
@@ -48,20 +48,20 @@ struct StudySessionView: View {
                         Button {
                             SpeechService.shared.speak(card.front, languageCode: deck.languageCode)
                         } label: {
-                            Label("読み上げ", systemImage: "speaker.wave.2.fill")
+                            Label(L10n.t("study.speak"), systemImage: "speaker.wave.2.fill")
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
                         }
                         .buttonStyle(.bordered)
                     }
                     .padding(.horizontal)
-                    Text("タップまたはスワイプでも操作できます")
+                    Text(L10n.t("study.hint_gesture"))
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                 }
             } else {
                 ContentUnavailableView(
-                    items.isEmpty ? "今日の復習はありません" : "セッション完了",
+                    items.isEmpty ? L10n.t("study.done_none") : L10n.t("study.session_done"),
                     systemImage: "checkmark.circle.fill",
                     description: Text(sessionSummary)
                 )
@@ -110,7 +110,7 @@ struct StudySessionView: View {
             }
             return "新しいカードをデッキから追加するか、カタログで学習を開始してください"
         }
-        return "今回レビュー: \(sessionGraded)語"
+        return L10n.format("study.reviewed", sessionGraded)
     }
 
     private static let dueFormatter: DateFormatter = {
@@ -186,11 +186,11 @@ struct StudySessionView: View {
     private func statusChip(for card: StudyItem) -> some View {
         Group {
             if card.isNew {
-                Text("新規")
+                Text(L10n.t("study.new"))
             } else if card.isDue {
-                Text("復習")
+                Text(L10n.t("study.review"))
             } else {
-                Text("学習中")
+                Text(L10n.t("study.learning"))
             }
         }
         .font(.caption2.weight(.bold))
@@ -213,7 +213,7 @@ struct StudySessionView: View {
             Button {
                 SpeechService.shared.speak(card.front, languageCode: deck.languageCode)
             } label: {
-                Label("読み上げ", systemImage: "speaker.wave.2.fill")
+                Label(L10n.t("study.speak"), systemImage: "speaker.wave.2.fill")
             }
             .buttonStyle(.bordered)
         }
@@ -260,8 +260,10 @@ struct StudySessionView: View {
     }
 
     private func japaneseBack(for card: StudyItem) -> String {
-        if let ja = card.ja, !ja.isEmpty { return ja }
+        // Prefer deck/catalog back (locale-filled at queue build); ja only if back empty.
         if let fc = card.flashCard, !fc.back.isEmpty { return fc.back }
+        if !card.back.isEmpty { return card.back }
+        if let ja = card.ja, !ja.isEmpty { return ja }
         return card.back
     }
 
@@ -378,13 +380,13 @@ struct ContinueStudyView: View {
                 .padding()
             }
             .background(AppTheme.pageBg)
-            .navigationTitle("学習")
+            .navigationTitle(L10n.t("tab.study"))
             .overlay {
                 if studyTargets.isEmpty {
                     ContentUnavailableView(
-                        "学習できるデッキがありません",
+                        L10n.t("study.no_decks"),
                         systemImage: "book",
-                        description: Text("カタログまたはデッキから学習を開始してください")
+                        description: Text(L10n.t("study.no_decks_hint"))
                     )
                 }
             }
@@ -396,9 +398,9 @@ struct ContinueStudyView: View {
         let nextDates = studyTargets.compactMap(\.nextDue)
         let next = nextDates.min()
         return VStack(alignment: .leading, spacing: 8) {
-            Text("今日の復習")
+            Text(L10n.t("study.today"))
                 .font(.headline)
-            Text("\(due) 枚が期限切れ")
+            Text(L10n.format("study.due_count", due))
                 .font(.title2.bold())
                 .foregroundStyle(due > 0 ? AppTheme.again : AppTheme.learned)
             if let next {

@@ -36,35 +36,35 @@ struct StatsView: View {
                 .padding()
             }
             .background(AppTheme.pageBg)
-            .navigationTitle("統計")
+            .navigationTitle(L10n.t("stats.title"))
         }
     }
 
     private var overviewGrid: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
             metricTile(
-                title: "覚えた語",
+                title: L10n.t("stats.learned"),
                 value: "\(stats.learnedCount)",
                 subtitle: "/ \(stats.catalogTotal)",
                 icon: "checkmark.circle.fill",
                 color: AppTheme.learned
             )
             metricTile(
-                title: "今日の期限",
+                title: L10n.t("stats.due_today"),
                 value: "\(stats.dueToday)",
                 subtitle: "復習待ち",
                 icon: "clock.badge.exclamationmark",
                 color: AppTheme.again
             )
             metricTile(
-                title: "今日レビュー",
+                title: L10n.t("stats.reviewed_today"),
                 value: "\(stats.reviewedToday)",
                 subtitle: "回・枚",
                 icon: "flame.fill",
                 color: .orange
             )
             metricTile(
-                title: "学習中",
+                title: L10n.t("stats.in_progress"),
                 value: "\(stats.inProgress)",
                 subtitle: "未定着",
                 icon: "arrow.triangle.2.circlepath",
@@ -100,13 +100,13 @@ struct StatsView: View {
 
     private var streakCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("連続学習")
+            Text(L10n.t("stats.streak"))
                 .font(.headline)
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 Text("\(stats.streakDays)")
                     .font(.system(size: 40, weight: .bold, design: .rounded))
                     .foregroundStyle(AppTheme.brand)
-                Text("日")
+                Text(L10n.t("stats.day"))
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(.secondary)
                 Spacer()
@@ -119,7 +119,7 @@ struct StatsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else {
-                Text("まだ学習記録がありません")
+                Text(L10n.t("stats.never"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -142,7 +142,7 @@ struct StatsView: View {
 
     private var letterChartCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("文字別の習得")
+            Text(L10n.t("stats.by_letter"))
                 .font(.headline)
             Chart(stats.byLetter) { item in
                 BarMark(
@@ -155,7 +155,7 @@ struct StatsView: View {
             .chartYScale(domain: 0...100)
             .frame(height: 200)
 
-            Text("各バーは A–Z（など）ごとの覚えた語の割合です")
+            Text(L10n.t("stats.by_letter_hint"))
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
         }
@@ -168,7 +168,7 @@ struct StatsView: View {
 
     private var letterListCard: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("文字別の内訳")
+            Text(L10n.t("stats.by_letter_detail"))
                 .font(.headline)
             ForEach(stats.byLetter.filter { $0.learned > 0 || $0.total > 0 }) { item in
                 HStack {
@@ -193,10 +193,10 @@ struct StatsView: View {
 
     private var deckListCard: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("デッキ別")
+            Text(L10n.t("stats.by_deck"))
                 .font(.headline)
             if stats.byDeck.isEmpty {
-                Text("デッキがありません")
+                Text(L10n.t("stats.no_decks"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else {

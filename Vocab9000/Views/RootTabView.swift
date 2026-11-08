@@ -9,23 +9,23 @@ struct RootTabView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             CatalogView()
-                .tabItem { Label("カタログ", systemImage: "books.vertical") }
+                .tabItem { Label(L10n.t("tab.catalog"), systemImage: "books.vertical") }
                 .tag(0)
 
             DeckListView()
-                .tabItem { Label("デッキ", systemImage: "rectangle.stack") }
+                .tabItem { Label(L10n.t("tab.decks"), systemImage: "rectangle.stack") }
                 .tag(1)
 
             ContinueStudyView()
-                .tabItem { Label("学習", systemImage: "rectangle.on.rectangle.angled") }
+                .tabItem { Label(L10n.t("tab.study"), systemImage: "rectangle.on.rectangle.angled") }
                 .tag(2)
 
             StatsView()
-                .tabItem { Label("統計", systemImage: "chart.bar.fill") }
+                .tabItem { Label(L10n.t("tab.stats"), systemImage: "chart.bar.fill") }
                 .tag(3)
 
             SettingsView()
-                .tabItem { Label("設定", systemImage: "gearshape") }
+                .tabItem { Label(L10n.t("tab.settings"), systemImage: "gearshape") }
                 .tag(4)
         }
         .tint(AppTheme.brand)

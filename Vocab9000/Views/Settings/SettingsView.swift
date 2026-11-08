@@ -16,13 +16,13 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
-                    Toggle("毎日の学習リマインダー", isOn: $notificationsEnabled)
+                    Toggle(L10n.t("settings.reminder_toggle"), isOn: $notificationsEnabled)
                         .onChange(of: notificationsEnabled) { _, on in
                             Task { await handleToggle(on) }
                         }
 
                     DatePicker(
-                        "通知時刻",
+                        L10n.t("settings.reminder_time"),
                         selection: $reminderTime,
                         displayedComponents: .hourAndMinute
                     )
@@ -32,35 +32,35 @@ struct SettingsView: View {
                         NotificationService.reminderHour = parts.hour ?? 20
                         NotificationService.reminderMinute = parts.minute ?? 0
                         republishAndReschedule()
-                        statusMessage = "通知時刻を更新しました"
+                        statusMessage = L10n.t("settings.time_updated")
                     }
                 } header: {
-                    Text("通知")
+                    Text(L10n.t("settings.notifications"))
                 } footer: {
-                    Text("期限がある日は枚数付きで知らせます。デフォルトは 20:00 です。App Group と通知の許可が必要です。")
+                    Text(L10n.t("settings.notifications_footer"))
                 }
 
                 if permissionDenied {
                     Section {
-                        Text("設定アプリで Vocab9000 の通知を許可してください。")
+                        Text(L10n.t("settings.permission_denied"))
                             .foregroundStyle(.orange)
                         if let url = URL(string: UIApplication.openSettingsURLString) {
-                            Link("システム設定を開く", destination: url)
+                            Link(L10n.t("settings.open_system"), destination: url)
                         }
                     }
                 }
 
-                Section("ウィジェット") {
-                    Text("ホーム画面でウィジェットを追加すると、今日の期限と連続学習日数が表示されます。")
+                Section(L10n.t("settings.widget")) {
+                    Text(L10n.t("settings.widget_hint"))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
-                    Button("ウィジェットデータを更新") {
+                    Button(L10n.t("settings.widget_refresh")) {
                         republishAndReschedule()
-                        statusMessage = "ウィジェットを更新しました"
+                        statusMessage = L10n.t("settings.widget_updated")
                     }
                 }
 
-                Section("ディープリンク") {
+                Section(L10n.t("settings.deeplink")) {
                     Text("vocab9000://study → 学習タブ")
                         .font(.footnote.monospaced())
                         .foregroundStyle(.secondary)
@@ -73,7 +73,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            .navigationTitle("設定")
+            .navigationTitle(L10n.t("settings.title"))
             .onAppear {
                 notificationsEnabled = NotificationService.isEnabled
                 reminderTime = Self.date(
@@ -91,17 +91,17 @@ struct SettingsView: View {
                 notificationsEnabled = false
                 NotificationService.isEnabled = false
                 permissionDenied = true
-                statusMessage = "通知が許可されませんでした"
+                statusMessage = L10n.t("settings.reminder_denied")
                 return
             }
             permissionDenied = false
             NotificationService.isEnabled = true
             republishAndReschedule()
-            statusMessage = "リマインダーをオンにしました"
+            statusMessage = L10n.t("settings.reminder_on")
         } else {
             NotificationService.isEnabled = false
             NotificationService.refreshSchedule(dueToday: 0)
-            statusMessage = "リマインダーをオフにしました"
+            statusMessage = L10n.t("settings.reminder_off")
         }
     }
 
