@@ -105,7 +105,7 @@ Vocab9000 は学生向け英単語フラッシュカードです。
 ## 7. 提出物チェック
 
 - [ ] `STORE_LISTING_JP.md` の文言を Connect に転記
-- [ ] サポート URL / プライバシーポリシー URL（簡易ページを用意。収集なしでもポリシー URL は推奨）
+- [ ] サポート URL / プライバシーポリシー URL（リポジトリの [PRIVACY_POLICY.md](./PRIVACY_POLICY.md) を GitHub Pages 等で公開可）
 - [ ] 年齢制限: 4+（教育・単語帳）
 - [ ] 著作権: 年 + Jian Wang
 - [ ] カテゴリ: 教育 / Education
