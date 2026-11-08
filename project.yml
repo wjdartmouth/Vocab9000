@@ -21,6 +21,7 @@ targets:
     resources:
       - path: Vocab9000/Resources
       - path: Vocab9000/PrivacyInfo.xcprivacy
+      - path: Vocab9000/InfoPlist.xcstrings
     entitlements:
       path: Vocab9000/Vocab9000.entitlements
     info:

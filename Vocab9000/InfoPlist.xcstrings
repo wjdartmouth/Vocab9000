@@ -1,0 +1,34 @@
+{
+  "sourceLanguage": "ja",
+  "version": "1.0",
+  "strings": {
+    "NSUserNotificationsUsageDescription": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学習リマインダーのために通知を送ります。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications are used for study reminders."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用于发送学习提醒通知。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用於發送學習提醒通知。"
+          }
+        }
+      }
+    }
+  }
+}
