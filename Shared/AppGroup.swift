@@ -20,7 +20,8 @@ struct WidgetSnapshot: Codable, Equatable {
     static let empty = WidgetSnapshot(dueToday: 0, streakDays: 0, learnedCount: 0, updatedAt: .distantPast)
 
     var accessibilitySummary: String {
-        "期限 \(dueToday) 枚、連続 \(streakDays) 日、習得 \(learnedCount) 語"
+        // Localized in widget UI; this is a fallback for VoiceOver before render.
+        "due \(dueToday), streak \(streakDays), learned \(learnedCount)"
     }
 }
 
