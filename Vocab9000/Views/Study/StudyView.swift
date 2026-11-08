@@ -309,6 +309,9 @@ struct StudySessionView: View {
                 flashCard: card.flashCard,
                 context: context
             )
+            WidgetDataStore.publish(catalog: catalog, context: context)
+            let due = StatsService.snapshot(catalog: catalog, context: context).dueToday
+            NotificationService.syncFromSettings(dueToday: due)
             sessionGraded += 1
             showBack = false
             liveBack = ""
